@@ -1,157 +1,4 @@
 
-
-            const categories = {
-                animals: [
-                    "cat", "dog", "pig", "duck", "rabbit", "bear", "tiger", "lion",
-                    "elephant", "monkey", "panda", "cow", "sheep", "horse", "chicken",
-                    "bird", "fish", "frog", "wolf", "giraffe", "kangaroo", "zebra",
-                    "deer", "fox", "turtle", "snake", "butterfly", "bee", "dolphin",
-                    "whale", "shark", "octopus", "crab", "lobster", "seal", "penguin"
-                ],
-                
-                food: [
-                    "apple", "banana", "orange", "grape", "watermelon", "strawberry",
-                    "pear", "peach", "mango", "pineapple", "lemon", "cherry", "coconut",
-                    "carrot", "potato", "tomato", "cabbage", "onion", "eggplant", "pepper",
-                    "bread", "rice", "noodle", "hamburger", "sandwich", "pizza", "dumpling",
-                    "sausage", "cheese", "chocolate", "ice cream", "cookie", "cake", "pie",
-                    "milk", "juice", "tea", "coffee", "soup", "egg", "meat", "chicken",
-                    "fish", "pork", "beef", "vegetable", "fruit", "salad", "yogurt"
-                ],
-
-                colors: [
-                    "red", "blue", "yellow", "green", "black", "white", "orange",
-                    "purple", "pink", "brown", "gray", "gold", "silver", "rainbow"
-                ],
-
-                numbers: [
-                    "one", "two", "three", "four", "five", "six", "seven", "eight",
-                    "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
-                    "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "thirty",
-                    "forty", "fifty", "sixty", "seventy", "eighty", "ninety", "hundred",
-                    "first", "second", "third", "fourth", "fifth", "sixth", "seventh",
-                    "eighth", "ninth", "tenth"
-                ],
-
-                family: [
-                    "father", "mother", "brother", "sister", "grandfather", "grandmother",
-                    "uncle", "aunt", "cousin", "son", "daughter", "baby", "parents",
-                    "grandparents", "family", "husband", "wife", "nephew", "niece"
-                ],
-
-                school: [
-                    "book", "pen", "pencil", "ruler", "eraser", "bag", "desk", "chair",
-                    "teacher", "student", "classroom", "library", "playground", "homework",
-                    "exam", "test", "lesson", "subject", "dictionary", "notebook", "marker",
-                    "glue", "scissors", "calculator", "map", "globe", "blackboard", "chalk",
-                    "computer", "printer", "projector", "textbook", "backpack", "lunchbox"
-                ],
-
-                verbs: [
-                    "run", "jump", "walk", "swim", "sing", "dance", "read", "write",
-                    "draw", "eat", "drink", "sleep", "study", "play", "listen", "speak",
-                    "watch", "see", "look", "smell", "touch", "taste", "think", "know",
-                    "learn", "teach", "ask", "answer", "open", "close", "push", "pull",
-                    "climb", "ride", "fly", "throw", "catch", "kick", "bounce", "skip",
-                    "wave", "point", "stand", "sit", "lie", "wash", "brush", "comb",
-                    "cook", "clean", "sweep", "mop", "shop", "buy", "sell", "pay"
-                ],
-
-                time: [
-                    "morning", "afternoon", "evening", "night", "today", "tomorrow",
-                    "yesterday", "week", "month", "year", "clock", "watch", "hour",
-                    "minute", "second", "day", "Monday", "Tuesday", "Wednesday",
-                    "Thursday", "Friday", "Saturday", "Sunday", "calendar", "season",
-                    "spring", "summer", "autumn", "winter", "holiday", "birthday",
-                    "festival", "now", "soon", "later", "early", "late", "always",
-                    "sometimes", "never"
-                ],
-
-                shapes: [
-                    "circle", "square", "triangle", "rectangle", "oval", "star",
-                    "heart", "diamond", "cube", "sphere", "cone", "cylinder",
-                    "pyramid", "line", "angle", "point", "side", "corner"
-                ],
-
-                weather: [
-                    "sunny", "rainy", "cloudy", "windy", "snowy", "foggy", "stormy",
-                    "lightning", "thunder", "rainbow", "temperature", "hot", "cold",
-                    "warm", "cool", "dry", "wet", "umbrella", "raincoat", "boots",
-                    "weather", "forecast", "season", "spring", "summer", "autumn",
-                    "winter"
-                ],
-
-                vehicles: [
-                    "car", "bus", "bike", "train", "plane", "ship", "boat", "taxi",
-                    "truck", "subway", "motorcycle", "helicopter", "rocket", "van",
-                    "ambulance", "fire engine", "police car", "tractor", "scooter",
-                    "skateboard", "ferry", "spaceship", "sailboat", "jet", "canoe"
-                ],
-
-                jobs: [
-                    "doctor", "nurse", "teacher", "driver", "cook", "farmer",
-                    "policeman", "fireman", "soldier", "artist", "singer", "dancer",
-                    "writer", "actor", "engineer", "scientist", "astronaut", "pilot",
-                    "postman", "barber", "dentist", "waiter", "secretary", "manager",
-                    "businessman", "judge", "lawyer", "reporter", "photographer"
-                ],
-
-                body: [
-                    "head", "eye", "nose", "mouth", "ear", "face", "hair", "neck",
-                    "shoulder", "arm", "hand", "finger", "chest", "stomach", "back",
-                    "leg", "knee", "foot", "toe", "tongue", "tooth", "lip", "eyebrow",
-                    "eyelash", "chin", "forehead", "wrist", "elbow", "ankle", "thumb"
-                ],
-
-                opposites: [
-                    "big", "small", "tall", "short", "hot", "cold", "new", "old", "fast", "slow",
-                    "happy", "sad", "heavy", "light", "full", "empty", "clean", "dirty",
-                    "open", "close", "up", "down", "in", "out", "left", "right", "front", "back",
-                    "day", "night", "white", "black", "rich", "poor", "young", "old", "wet", "dry",
-                    "same", "different"
-                ],
-
-                nature: [
-                    "sun", "moon", "star", "sky", "cloud", "rain", "snow", "wind",
-                    "tree", "flower", "grass", "leaf", "mountain", "river", "lake",
-                    "sea", "ocean", "stone", "sand", "earth", "forest", "field",
-                    "plant", "root", "branch", "seed", "soil", "rock", "hill",
-                    "volcano", "island", "desert", "beach", "wave"
-                ],
-
-                subjects: [
-                    "math", "Chinese", "English", "science", "music", "art",
-                    "history", "geography", "PE", "biology", "physics", "chemistry",
-                    "computer", "morality", "painting", "drama", "dance", "writing",
-                    "reading", "grammar"
-                ],
-
-                sports: [
-                    "football", "basketball", "pingpong", "badminton", "tennis",
-                    "volleyball", "baseball", "swimming", "running", "jumping",
-                    "skating", "skiing", "boxing", "wrestling", "gymnastics",
-                    "cycling", "hiking", "climbing", "diving", "surfing",
-                    "fishing", "yoga", "jogging", "golf", "archery"
-                ],
-
-                calendar: [
-                    "January", "February", "March", "April", "May", "June",
-                    "July", "August", "September", "October", "November", "December",
-                    "year", "month", "week", "day", "hour", "minute", "second",
-                    "birthday", "holiday", "festival", "schedule", "plan", "meeting"
-                ],
-
-                common: [
-                    "hello", "goodbye", "thank you", "please", "sorry", "excuse me",
-                    "yes", "no", "ok", "good", "bad", "right", "wrong", "friend",
-                    "love", "hate", "like", "dislike", "happy", "sad", "angry",
-                    "hungry", "thirsty", "tired", "sick", "healthy", "beautiful",
-                    "ugly", "easy", "difficult", "funny", "serious", "quick", "slow",
-                    "old", "new", "young", "rich", "poor", "same", "different"
-                ]
-            };
-
-
             const chineseMap = {
                 // ================= 动物类 (80个) =================
                 "cat": "猫", "dog": "狗", "pig": "猪", "duck": "鸭子",
@@ -362,3 +209,160 @@
                 "old": "老", "new": "新", "young": "年轻", "rich": "富有",
                 "poor": "贫穷", "same": "相同", "different": "不同"
             };
+
+
+/*
+            const categories = {
+                animals: [
+                    "cat", "dog", "pig", "duck", "rabbit", "bear", "tiger", "lion",
+                    "elephant", "monkey", "panda", "cow", "sheep", "horse", "chicken",
+                    "bird", "fish", "frog", "wolf", "giraffe", "kangaroo", "zebra",
+                    "deer", "fox", "turtle", "snake", "butterfly", "bee", "dolphin",
+                    "whale", "shark", "octopus", "crab", "lobster", "seal", "penguin"
+                ],
+                
+                food: [
+                    "apple", "banana", "orange", "grape", "watermelon", "strawberry",
+                    "pear", "peach", "mango", "pineapple", "lemon", "cherry", "coconut",
+                    "carrot", "potato", "tomato", "cabbage", "onion", "eggplant", "pepper",
+                    "bread", "rice", "noodle", "hamburger", "sandwich", "pizza", "dumpling",
+                    "sausage", "cheese", "chocolate", "ice cream", "cookie", "cake", "pie",
+                    "milk", "juice", "tea", "coffee", "soup", "egg", "meat", "chicken",
+                    "fish", "pork", "beef", "vegetable", "fruit", "salad", "yogurt"
+                ],
+
+                colors: [
+                    "red", "blue", "yellow", "green", "black", "white", "orange",
+                    "purple", "pink", "brown", "gray", "gold", "silver", "rainbow"
+                ],
+
+                numbers: [
+                    "one", "two", "three", "four", "five", "six", "seven", "eight",
+                    "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
+                    "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "thirty",
+                    "forty", "fifty", "sixty", "seventy", "eighty", "ninety", "hundred",
+                    "first", "second", "third", "fourth", "fifth", "sixth", "seventh",
+                    "eighth", "ninth", "tenth"
+                ],
+
+                family: [
+                    "father", "mother", "brother", "sister", "grandfather", "grandmother",
+                    "uncle", "aunt", "cousin", "son", "daughter", "baby", "parents",
+                    "grandparents", "family", "husband", "wife", "nephew", "niece"
+                ],
+
+                school: [
+                    "book", "pen", "pencil", "ruler", "eraser", "bag", "desk", "chair",
+                    "teacher", "student", "classroom", "library", "playground", "homework",
+                    "exam", "test", "lesson", "subject", "dictionary", "notebook", "marker",
+                    "glue", "scissors", "calculator", "map", "globe", "blackboard", "chalk",
+                    "computer", "printer", "projector", "textbook", "backpack", "lunchbox"
+                ],
+
+                verbs: [
+                    "run", "jump", "walk", "swim", "sing", "dance", "read", "write",
+                    "draw", "eat", "drink", "sleep", "study", "play", "listen", "speak",
+                    "watch", "see", "look", "smell", "touch", "taste", "think", "know",
+                    "learn", "teach", "ask", "answer", "open", "close", "push", "pull",
+                    "climb", "ride", "fly", "throw", "catch", "kick", "bounce", "skip",
+                    "wave", "point", "stand", "sit", "lie", "wash", "brush", "comb",
+                    "cook", "clean", "sweep", "mop", "shop", "buy", "sell", "pay"
+                ],
+
+                time: [
+                    "morning", "afternoon", "evening", "night", "today", "tomorrow",
+                    "yesterday", "week", "month", "year", "clock", "watch", "hour",
+                    "minute", "second", "day", "Monday", "Tuesday", "Wednesday",
+                    "Thursday", "Friday", "Saturday", "Sunday", "calendar", "season",
+                    "spring", "summer", "autumn", "winter", "holiday", "birthday",
+                    "festival", "now", "soon", "later", "early", "late", "always",
+                    "sometimes", "never"
+                ],
+
+                shapes: [
+                    "circle", "square", "triangle", "rectangle", "oval", "star",
+                    "heart", "diamond", "cube", "sphere", "cone", "cylinder",
+                    "pyramid", "line", "angle", "point", "side", "corner"
+                ],
+
+                weather: [
+                    "sunny", "rainy", "cloudy", "windy", "snowy", "foggy", "stormy",
+                    "lightning", "thunder", "rainbow", "temperature", "hot", "cold",
+                    "warm", "cool", "dry", "wet", "umbrella", "raincoat", "boots",
+                    "weather", "forecast", "season", "spring", "summer", "autumn",
+                    "winter"
+                ],
+
+                vehicles: [
+                    "car", "bus", "bike", "train", "plane", "ship", "boat", "taxi",
+                    "truck", "subway", "motorcycle", "helicopter", "rocket", "van",
+                    "ambulance", "fire engine", "police car", "tractor", "scooter",
+                    "skateboard", "ferry", "spaceship", "sailboat", "jet", "canoe"
+                ],
+
+                jobs: [
+                    "doctor", "nurse", "teacher", "driver", "cook", "farmer",
+                    "policeman", "fireman", "soldier", "artist", "singer", "dancer",
+                    "writer", "actor", "engineer", "scientist", "astronaut", "pilot",
+                    "postman", "barber", "dentist", "waiter", "secretary", "manager",
+                    "businessman", "judge", "lawyer", "reporter", "photographer"
+                ],
+
+                body: [
+                    "head", "eye", "nose", "mouth", "ear", "face", "hair", "neck",
+                    "shoulder", "arm", "hand", "finger", "chest", "stomach", "back",
+                    "leg", "knee", "foot", "toe", "tongue", "tooth", "lip", "eyebrow",
+                    "eyelash", "chin", "forehead", "wrist", "elbow", "ankle", "thumb"
+                ],
+
+                opposites: [
+                    "big", "small", "tall", "short", "hot", "cold", "new", "old", "fast", "slow",
+                    "happy", "sad", "heavy", "light", "full", "empty", "clean", "dirty",
+                    "open", "close", "up", "down", "in", "out", "left", "right", "front", "back",
+                    "day", "night", "white", "black", "rich", "poor", "young", "old", "wet", "dry",
+                    "same", "different"
+                ],
+
+                nature: [
+                    "sun", "moon", "star", "sky", "cloud", "rain", "snow", "wind",
+                    "tree", "flower", "grass", "leaf", "mountain", "river", "lake",
+                    "sea", "ocean", "stone", "sand", "earth", "forest", "field",
+                    "plant", "root", "branch", "seed", "soil", "rock", "hill",
+                    "volcano", "island", "desert", "beach", "wave"
+                ],
+
+                subjects: [
+                    "math", "Chinese", "English", "science", "music", "art",
+                    "history", "geography", "PE", "biology", "physics", "chemistry",
+                    "computer", "morality", "painting", "drama", "dance", "writing",
+                    "reading", "grammar"
+                ],
+
+                sports: [
+                    "football", "basketball", "pingpong", "badminton", "tennis",
+                    "volleyball", "baseball", "swimming", "running", "jumping",
+                    "skating", "skiing", "boxing", "wrestling", "gymnastics",
+                    "cycling", "hiking", "climbing", "diving", "surfing",
+                    "fishing", "yoga", "jogging", "golf", "archery"
+                ],
+
+                calendar: [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December",
+                    "year", "month", "week", "day", "hour", "minute", "second",
+                    "birthday", "holiday", "festival", "schedule", "plan", "meeting"
+                ],
+
+                common: [
+                    "hello", "goodbye", "thank you", "please", "sorry", "excuse me",
+                    "yes", "no", "ok", "good", "bad", "right", "wrong", "friend",
+                    "love", "hate", "like", "dislike", "happy", "sad", "angry",
+                    "hungry", "thirsty", "tired", "sick", "healthy", "beautiful",
+                    "ugly", "easy", "difficult", "funny", "serious", "quick", "slow",
+                    "old", "new", "young", "rich", "poor", "same", "different"
+                ]
+            }; */
+
+
+
+

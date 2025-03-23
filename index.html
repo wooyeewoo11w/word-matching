@@ -14,14 +14,12 @@
             margin: 0;
             padding: 20px;
         }
-
         .settings {
             margin: 20px 0;
             display: flex;
             gap: 15px;
             align-items: center;
         }
-
         .game-board {
             display: grid;
             gap: 8px;
@@ -30,7 +28,6 @@
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-
         .card {
             background: #e3f2fd; /* 淡蓝色背景 */
             border: 2px solid #90caf9;
@@ -48,131 +45,142 @@
             position: relative;
             transform-style: preserve-3d;
         }
-
         .card.flip {
             background: #c8e6c9; /* 点击后变为绿色 */
             transform: rotateY(180deg);
         }
-
         .card.matched {
             opacity: 0;
             pointer-events: none;
         }
-
         .info {
             margin: 15px 0;
             font-size: 18px;
             color: #2c3e50;
         }
-
         input[type="number"] {
             padding: 8px 12px;
             border: 2px solid #90caf9;
             border-radius: 6px;
             width: 100px;
         }
-
         button {
             padding: 8px 20px;
             background: #42a5f5;
-            color: white;
+            color white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
             transition: background 0.2s;
         }
-
         button:hover {
             background: #2196f3;
+        }
+        select {
+            padding: 8px 12px;
+            border: 2px solid #90caf9;
+            border-radius: 6px;
         }
     </style>
 </head>
 <body>
     <h1 style="color: #2c3e50;">单词消消乐</h1>
     <div class="settings">
-        <input type="number" id="gridSize" min="2" max="8" step="1" value="4" placeholder="偶数尺寸">
+        <input type="number" id="gridSize" min="2" max="8" step="1" value="4" placeholder="行列数">
+        <select id="level">
+            <option value="primary">小学</option>
+            <option value="middle">初中</option>
+            <option value="high">高中</option>
+        </select>
         <button onclick="startNewGame()">开始游戏</button>
     </div>
     <div class="info">
         得分: <span id="score">0</span>
     </div>
     <div id="gameBoard" class="game-board"></div>
-
-        <!-- 嵌入音频文件 -->
     <audio id="matchSound" src="audio/match.mp3" preload="auto"></audio>
     <audio id="errorSound" src="audio/error.mp3" preload="auto"></audio>
-
+    <audio id="endingSound" src="audio/ending.mp3" preload="auto"></audio>
     <script src="chinese-map.js"></script>
+    <script src="middle-map.js"></script>   
+    <script src="high-map.js"></script> 
+
     <script>
-        // 自动生成小学英语词汇库（800+基础词汇）
-        const generateVocabulary = () => {
-            let words = [];
-            for (const [category, enWords] of Object.entries(categories)) {
-                enWords.forEach(en => {
-                    words.push({
-                        en: en,
-                        cn: chineseMap[en] || `${en}（待翻译）`,
-                        category: category
-                    });
-                });
-            }
-            return words.slice(0, 800); // 控制词汇数量
+        // 定义小学和初中单词库
+        const wordBanks = {
+            primary: chineseMap,
+            middle: middleMap,
+            high: highMap
         };
 
-        const words = generateVocabulary();
+        // 生成词汇库函数
+
+        const generateVocabulary = (level) => {    
+            const currentWordBank = wordBanks[level];    
+            if (!currentWordBank) return []; // 确保单词库存在
+            const words = Object.keys(currentWordBank).map(en => ({        
+            en: en,        
+            cn: currentWordBank[en],        
+            category: "general"
+                }));    
+            return words;
+        };
+
         let selectedCards = [];
         let score = 0;
         let matchedPairs = 0;
 
-
         // 获取音频元素
         const matchSound = document.getElementById('matchSound');
         const errorSound = document.getElementById('errorSound');
-
         // 播放匹配成功音效
         function playMatchSound() {
             matchSound.currentTime = 0; // 从头开始播放
             matchSound.play();
         }
-
         // 播放匹配失败音效
         function playErrorSound() {
             errorSound.currentTime = 0; // 从头开始播放
             errorSound.play();
         }
 
+        // 播放结束音效
+        function playEndingSound() {
+            endingSound.currentTime = 0; // 从头开始播放
+            endingSound.play();
+        }
 
 
         function startNewGame() {
-            const gridSize = Math.max(2, Math.min(8,
-                parseInt(document.getElementById('gridSize').value) || 4));
-            initGame(gridSize);
+            const gridSize = Math.max(2, Math.min(8, parseInt(document.getElementById('gridSize').value) || 4));
+            const level = document.getElementById('level').value;
+            initGame(gridSize, level);
         }
 
-        function initGame(gridSize) {
+        function initGame(gridSize, level) {
             const gameBoard = document.getElementById('gameBoard');
             gameBoard.innerHTML = '';
             gameBoard.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
-            
-            // 生成卡片对
+
+            // 获取当前级别的词汇库
+            const words = generateVocabulary(level);
             // 计算需要的卡片对数
             let pairsNeeded = Math.floor((gridSize ** 2) / 2);
- 
-            // 如果总卡片数为奇数，增加一个空白卡片
             let hasBlankCard = (gridSize ** 2) % 2 !== 0;
 
-            
-            const selectedWords = shuffleArray([...words]).slice(0, pairsNeeded);
+            // 随机选择单词对
+            const selectedWords = shuffleArray(words).slice(0, pairsNeeded);
             const cardPairs = selectedWords.flatMap(word => [
                 { ...word, type: 'en' },
                 { ...word, type: 'cn' }
             ]);
 
-                    // 如果有空白卡片，添加一个空白卡片
+            // 如果有空白卡片，添加一个空白卡片
             if (hasBlankCard) {
                 cardPairs.push({ en: 'BLANK', cn: '空白', type: 'blank' });
             }
 
+            // 随机排列卡片
             shuffleArray(cardPairs).forEach(word => {
                 const card = createCardElement(word);
                 gameBoard.appendChild(card);
@@ -200,10 +208,8 @@
 
         function handleCardClick(card) {
             if (card.classList.contains('matched') || selectedCards.includes(card)) return;
-
             card.classList.add('flip');
             selectedCards.push(card);
-            
             if (selectedCards.length === 2) {
                 setTimeout(checkMatch, 600);
             }
@@ -212,43 +218,26 @@
         function checkMatch() {
             const [card1, card2] = selectedCards;
             const isMatch = card1.dataset.key === card2.dataset.key;
-            
             if (isMatch) {
-
                 score += 100;
                 matchedPairs++;
                 document.getElementById('score').textContent = score;
                 card1.classList.add('matched');
                 card2.classList.add('matched');
-                playMatchSound(); // 匹配成功音效
-
+                playMatchSound();
             } else {
                 card1.classList.remove('flip');
                 card2.classList.remove('flip');
-                playErrorSound(); // 匹配失败音效
+                playErrorSound();
             }
-            
             selectedCards = [];
-
-            // 计算总对数（忽略空白卡片）
             const gridSize = parseInt(document.getElementById('gridSize').value);
             const totalPairs = Math.floor((gridSize ** 2) / 2);
-
-            // 检查是否全部匹配完成
             if (matchedPairs === totalPairs) {
                 setTimeout(() => {
+                    playEndingSound();
                     alert(`游戏胜利！得分：${score}`);
-                }, 500);
-            }
-
-        }
-
-        // 播放音效
-        function playSound(type) {
-            if (type === 'match') {
-                playSuccessSound();
-            } else if (type === 'error') {
-                playErrorSound();
+                }, 1000);
             }
         }
 
@@ -261,7 +250,6 @@
             return array;
         }
 
-        
         // 初始化游戏
         startNewGame();
     </script>
