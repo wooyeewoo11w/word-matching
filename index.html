@@ -44,7 +44,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 20px;
             position: relative;
             transform-style: preserve-3d;
         }
@@ -90,13 +90,18 @@
 <body>
     <h1 style="color: #2c3e50;">单词消消乐</h1>
     <div class="settings">
-        <input type="number" id="gridSize" min="2" max="8" step="2" value="4" placeholder="偶数尺寸">
+        <input type="number" id="gridSize" min="2" max="8" step="1" value="4" placeholder="偶数尺寸">
         <button onclick="startNewGame()">开始游戏</button>
     </div>
     <div class="info">
         得分: <span id="score">0</span>
     </div>
     <div id="gameBoard" class="game-board"></div>
+
+        <!-- 嵌入音频文件 -->
+    <audio id="matchSound" src="audio/match.mp3" preload="auto"></audio>
+    <audio id="errorSound" src="audio/error.mp3" preload="auto"></audio>
+
     <script src="chinese-map.js"></script>
     <script>
         // 自动生成小学英语词汇库（800+基础词汇）
@@ -119,6 +124,25 @@
         let score = 0;
         let matchedPairs = 0;
 
+
+        // 获取音频元素
+        const matchSound = document.getElementById('matchSound');
+        const errorSound = document.getElementById('errorSound');
+
+        // 播放匹配成功音效
+        function playMatchSound() {
+            matchSound.currentTime = 0; // 从头开始播放
+            matchSound.play();
+        }
+
+        // 播放匹配失败音效
+        function playErrorSound() {
+            errorSound.currentTime = 0; // 从头开始播放
+            errorSound.play();
+        }
+
+
+
         function startNewGame() {
             const gridSize = Math.max(2, Math.min(8,
                 parseInt(document.getElementById('gridSize').value) || 4));
@@ -131,12 +155,23 @@
             gameBoard.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
             
             // 生成卡片对
-            const pairsNeeded = (gridSize ** 2) / 2;
+            // 计算需要的卡片对数
+            let pairsNeeded = Math.floor((gridSize ** 2) / 2);
+ 
+            // 如果总卡片数为奇数，增加一个空白卡片
+            let hasBlankCard = (gridSize ** 2) % 2 !== 0;
+
+            
             const selectedWords = shuffleArray([...words]).slice(0, pairsNeeded);
             const cardPairs = selectedWords.flatMap(word => [
                 { ...word, type: 'en' },
                 { ...word, type: 'cn' }
             ]);
+
+                    // 如果有空白卡片，添加一个空白卡片
+            if (hasBlankCard) {
+                cardPairs.push({ en: 'BLANK', cn: '空白', type: 'blank' });
+            }
 
             shuffleArray(cardPairs).forEach(word => {
                 const card = createCardElement(word);
@@ -153,9 +188,13 @@
         function createCardElement(word) {
             const card = document.createElement('div');
             card.className = 'card';
-            card.textContent = word.type === 'en' ? word.en : word.cn;
-            card.dataset.key = word.en;
-            card.addEventListener('click', () => handleCardClick(card));
+            card.textContent = word.type === 'blank' ? '' : (word.type === 'en' ? word.en : word.cn);
+            card.dataset.key = word.type === 'blank' ? 'BLANK' : word.en; // 空白卡片的 key 设置为 'BLANK'
+            if (word.type !== 'blank') {
+                card.addEventListener('click', () => handleCardClick(card));
+            } else {
+                card.classList.add('blank'); // 空白卡片不可点击
+            }
             return card;
         }
 
@@ -175,36 +214,43 @@
             const isMatch = card1.dataset.key === card2.dataset.key;
             
             if (isMatch) {
+
                 score += 100;
                 matchedPairs++;
                 document.getElementById('score').textContent = score;
                 card1.classList.add('matched');
                 card2.classList.add('matched');
-                playSound('match'); // 匹配成功音效
+                playMatchSound(); // 匹配成功音效
 
-                // 检查是否全部匹配完成
-                if (matchedPairs === (parseInt(document.getElementById('gridSize').value) ** 2) / 2) {
-                    setTimeout(() => {
-                        alert(`游戏胜利！得分：${score}`);
-                    }, 500);
-                }
             } else {
                 card1.classList.remove('flip');
                 card2.classList.remove('flip');
-                playSound('error'); // 匹配失败音效
+                playErrorSound(); // 匹配失败音效
             }
             
             selectedCards = [];
+
+            // 计算总对数（忽略空白卡片）
+            const gridSize = parseInt(document.getElementById('gridSize').value);
+            const totalPairs = Math.floor((gridSize ** 2) / 2);
+
+            // 检查是否全部匹配完成
+            if (matchedPairs === totalPairs) {
+                setTimeout(() => {
+                    alert(`游戏胜利！得分：${score}`);
+                }, 500);
+            }
+
         }
 
         // 播放音效
         function playSound(type) {
-    if (type === 'match') {
-        playSuccessSound();
-    } else if (type === 'error') {
-        playErrorSound();
-    }
-}
+            if (type === 'match') {
+                playSuccessSound();
+            } else if (type === 'error') {
+                playErrorSound();
+            }
+        }
 
         // 辅助函数：数组随机排序
         function shuffleArray(array) {
@@ -215,27 +261,7 @@
             return array;
         }
 
-        // 匹配成功音效（高音）
-function playSuccessSound() {
-    const context = new AudioContext();
-    const oscillator = context.createOscillator();
-    oscillator.frequency.value = 580; // 频率（Hz）
-    oscillator.connect(context.destination);
-    oscillator.start();
-    oscillator.stop(context.currentTime + 0.5); // 持续时间
-}
-
-// 匹配失败音效（低音）
-function playErrorSound() {
-    const context = new AudioContext();
-    const oscillator = context.createOscillator();
-    oscillator.frequency.value = 220; // 频率（Hz）
-    oscillator.connect(context.destination);
-    oscillator.start();
-    oscillator.stop(context.currentTime + 0.5); // 持续时间
-}
         
-
         // 初始化游戏
         startNewGame();
     </script>
