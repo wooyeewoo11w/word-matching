@@ -23,16 +23,14 @@
         .game-board {
             display: grid;
             gap: 8px;
-            padding: 15px;
+            padding: 8px;
             background: #ffffff;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         .card {
-            background: #e3f2fd; /* 淡蓝色背景 */
-            border: 2px solid #90caf9;
             border-radius: 8px;
-            padding: 15px;
+            padding: 5px;
             cursor: pointer;
             text-align: center;
             transition: all 0.3s ease;
@@ -41,12 +39,28 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 24px;
             position: relative;
             transform-style: preserve-3d;
         }
+        .card.en {
+            background: #b1b7ff; /* 英文卡片背景色：淡蓝色 */
+            border: 2px solid #b1b7ff; 
+        }
+
+        .card.cn {
+            background: #f7ccf5; /* 中文卡片背景色：淡橙色 */
+            border: 2px solid #f7ccf5; 
+        }
+
+        .card.blank{
+            background: #ffffff;
+            border: 2px solid #ffffff;
+        }
+
         .card.flip {
             background: #c8e6c9; /* 点击后变为绿色 */
+            border: 2px solid #c8e6c9;
             transform: rotateY(180deg);
         }
         .card.matched {
@@ -55,17 +69,17 @@
         }
         .info {
             margin: 15px 0;
-            font-size: 18px;
+            font-size: 20px;
             color: #2c3e50;
         }
         input[type="number"] {
-            padding: 8px 12px;
+            padding: 12px 16px;
             border: 2px solid #90caf9;
             border-radius: 6px;
-            width: 100px;
+            width: 60px;
         }
         button {
-            padding: 8px 20px;
+            padding: 12px 20px;
             background: #42a5f5;
             color white;
             border: none;
@@ -77,7 +91,7 @@
             background: #2196f3;
         }
         select {
-            padding: 8px 12px;
+            padding: 12px 16px;
             border: 2px solid #90caf9;
             border-radius: 6px;
         }
@@ -96,6 +110,7 @@
     </div>
     <div class="info">
         得分: <span id="score">0</span>
+        <span>最高分: <span id="highScore">0</span></span>
     </div>
     <div id="gameBoard" class="game-board"></div>
     <audio id="matchSound" src="audio/match.mp3" preload="auto"></audio>
@@ -104,7 +119,6 @@
     <script src="chinese-map.js"></script>
     <script src="middle-map.js"></script>   
     <script src="high-map.js"></script> 
-
     <script>
         // 定义小学和初中单词库
         const wordBanks = {
@@ -113,16 +127,19 @@
             high: highMap
         };
 
-        // 生成词汇库函数
+        // 获取最高分
+        let highScore = localStorage.getItem('highScore') || 0;
+        document.getElementById('highScore').textContent = highScore;
 
+        // 生成词汇库函数
         const generateVocabulary = (level) => {    
             const currentWordBank = wordBanks[level];    
             if (!currentWordBank) return []; // 确保单词库存在
             const words = Object.keys(currentWordBank).map(en => ({        
-            en: en,        
-            cn: currentWordBank[en],        
-            category: "general"
-                }));    
+                en: en,        
+                cn: currentWordBank[en],        
+                category: "general"
+            }));    
             return words;
         };
 
@@ -133,11 +150,14 @@
         // 获取音频元素
         const matchSound = document.getElementById('matchSound');
         const errorSound = document.getElementById('errorSound');
+        const endingSound = document.getElementById('endingSound');
+
         // 播放匹配成功音效
         function playMatchSound() {
             matchSound.currentTime = 0; // 从头开始播放
             matchSound.play();
         }
+
         // 播放匹配失败音效
         function playErrorSound() {
             errorSound.currentTime = 0; // 从头开始播放
@@ -149,7 +169,6 @@
             endingSound.currentTime = 0; // 从头开始播放
             endingSound.play();
         }
-
 
         function startNewGame() {
             const gridSize = Math.max(2, Math.min(8, parseInt(document.getElementById('gridSize').value) || 4));
@@ -164,6 +183,7 @@
 
             // 获取当前级别的词汇库
             const words = generateVocabulary(level);
+
             // 计算需要的卡片对数
             let pairsNeeded = Math.floor((gridSize ** 2) / 2);
             let hasBlankCard = (gridSize ** 2) % 2 !== 0;
@@ -198,6 +218,15 @@
             card.className = 'card';
             card.textContent = word.type === 'blank' ? '' : (word.type === 'en' ? word.en : word.cn);
             card.dataset.key = word.type === 'blank' ? 'BLANK' : word.en; // 空白卡片的 key 设置为 'BLANK'
+            
+            // 根据卡片的类型添加不同的类名
+            if (word.type === 'en') {
+                card.classList.add('en'); // 英文卡片
+            } else if (word.type === 'cn') {
+                card.classList.add('cn'); // 中文卡片
+            }           
+            
+            
             if (word.type !== 'blank') {
                 card.addEventListener('click', () => handleCardClick(card));
             } else {
@@ -236,6 +265,12 @@
             if (matchedPairs === totalPairs) {
                 setTimeout(() => {
                     playEndingSound();
+                    // 更新最高分
+                    if (score > highScore) {
+                        highScore = score;
+                        localStorage.setItem('highScore', highScore);
+                        document.getElementById('highScore').textContent = highScore;
+                    }
                     alert(`游戏胜利！得分：${score}`);
                 }, 1000);
             }
