@@ -110,7 +110,8 @@
     </div>
     <div class="info">
         得分: <span id="score">0</span>
-        <span>最高分: <span id="highScore">0</span></span>
+        <span>总得分: <span id="highScore">0</span></span>
+        <span>已通过关卡数: <span id="passedLevels">0</span></span>
     </div>
     <div id="gameBoard" class="game-board"></div>
     <audio id="matchSound" src="audio/match.mp3" preload="auto"></audio>
@@ -126,6 +127,8 @@
             middle: middleMap,
             high: highMap
         };
+
+        const MAX_LEVELS = 1000; // 关卡上限
 
         // 获取最高分
         let highScore = localStorage.getItem('highScore') || 0;
@@ -170,9 +173,41 @@
             endingSound.play();
         }
 
+        // 获取当前级别的已通过关卡数
+        function getPassedLevels(level) {
+            return parseInt(localStorage.getItem(`passedLevels_${level}`)) || 0;
+        }
+
+        // 更新当前级别的已通过关卡数
+        function updatePassedLevels(level) {
+            const passedLevels = getPassedLevels(level) + 1;
+            localStorage.setItem(`passedLevels_${level}`, passedLevels);
+            return passedLevels;
+        }   
+
+        
+        // 获取当前级别的总积分
+        function getTotalScore(level) {
+            return parseInt(localStorage.getItem(`totalScore_${level}`)) || 0;
+        }
+
+        // 更新当前级别的总积分
+        function updateTotalScore(level, score) {
+            const totalScore = getTotalScore(level) + score;
+            localStorage.setItem(`totalScore_${level}`, totalScore);
+            return totalScore;
+        }
+        
         function startNewGame() {
-            const gridSize = Math.max(2, Math.min(8, parseInt(document.getElementById('gridSize').value) || 4));
             const level = document.getElementById('level').value;
+            const passedLevels = getPassedLevels(level);
+            document.getElementById('passedLevels').textContent = passedLevels;
+
+            // 显示当前级别的总积分
+            const totalScore = getTotalScore(level);
+            document.getElementById('highScore').textContent = totalScore; // 修改显示内容
+
+            const gridSize = parseInt(document.getElementById('gridSize').value);
             initGame(gridSize, level);
         }
 
@@ -240,7 +275,7 @@
             card.classList.add('flip');
             selectedCards.push(card);
             if (selectedCards.length === 2) {
-                setTimeout(checkMatch, 600);
+                setTimeout(checkMatch, 300);
             }
         }
 
@@ -248,7 +283,7 @@
             const [card1, card2] = selectedCards;
             const isMatch = card1.dataset.key === card2.dataset.key;
             if (isMatch) {
-                score += 100;
+                score += 10;
                 matchedPairs++;
                 document.getElementById('score').textContent = score;
                 card1.classList.add('matched');
@@ -265,13 +300,21 @@
             if (matchedPairs === totalPairs) {
                 setTimeout(() => {
                     playEndingSound();
-                    // 更新最高分
-                    if (score > highScore) {
-                        highScore = score;
-                        localStorage.setItem('highScore', highScore);
-                        document.getElementById('highScore').textContent = highScore;
+
+                    // 更新当前级别的总积分
+                    const level = document.getElementById('level').value;
+                    const totalScore = updateTotalScore(level, score);
+
+                    // 更新已通过的关卡数
+                    const passedLevels = updatePassedLevels(level);
+                
+                    // 检查是否达到关卡上限            
+                    if (passedLevels < MAX_LEVELS) {
+                        alert(`关卡完成！已通过关卡数：${passedLevels}`);
+                        startNewGame(); // 进入下一关
+                    } else {
+                        alert(`已达到关卡上限！最终总积分：${totalScore}`);
                     }
-                    alert(`游戏胜利！得分：${score}`);
                 }, 1000);
             }
         }
