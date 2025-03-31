@@ -17,7 +17,7 @@
         .settings {
             margin: 20px 0;
             display: flex;
-            gap: 15px;
+            gap: 10px;
             align-items: center;
         }
         .game-board {
@@ -69,17 +69,17 @@
         }
         .info {
             margin: 15px 0;
-            font-size: 20px;
+            font-size: 16px;
             color: #2c3e50;
         }
         input[type="number"] {
             padding: 12px 16px;
             border: 2px solid #90caf9;
             border-radius: 6px;
-            width: 60px;
+            width: 25px;
         }
         button {
-            padding: 12px 20px;
+            padding: 12px 16px;
             background: #42a5f5;
             color white;
             border: none;
@@ -95,18 +95,28 @@
             border: 2px solid #90caf9;
             border-radius: 6px;
         }
+        .settings label {
+            font-size: 16px;
+            color: #2c3e50;
+            margin-right: 2px;
+        }
+
     </style>
 </head>
 <body>
     <h1 style="color: #2c3e50;">单词消消乐</h1>
     <div class="settings">
-        <input type="number" id="gridSize" min="2" max="8" step="1" value="4" placeholder="行列数">
+        <label for="rows">行:</label>
+        <input type="number" id="rows" min="2" max="9" value="4" placeholder="行数">
+        <label for="cols">列:</label>
+        <input type="number" id="cols" min="2" max="9" value="4" placeholder="列数">
         <select id="level">
             <option value="primary">小学</option>
             <option value="middle">初中</option>
             <option value="high">高中</option>
         </select>
         <button onclick="startNewGame()">开始游戏</button>
+        <button onclick="resetGame()">重置游戏</button>
     </div>
     <div class="info">
         得分: <span id="score">0</span>
@@ -199,6 +209,20 @@
         }
         
         function startNewGame() {
+            let rows = parseInt(document.getElementById('rows').value);
+            let cols = parseInt(document.getElementById('cols').value);
+            // 验证行数和列数
+            if (isNaN(rows) || rows < 2 || rows > 9) {
+                alert("行数必须在 2 到 9 之间！");
+                rows = 4; // 默认值
+                document.getElementById('rows').value = rows; // 重置输入框
+            }
+            if (isNaN(cols) || cols < 2 || cols > 9) {
+                alert("列数必须在 2 到 9 之间！");
+                cols = 4; // 默认值
+                document.getElementById('cols').value = cols; // 重置输入框
+            }
+
             const level = document.getElementById('level').value;
             const passedLevels = getPassedLevels(level);
             document.getElementById('passedLevels').textContent = passedLevels;
@@ -207,21 +231,20 @@
             const totalScore = getTotalScore(level);
             document.getElementById('highScore').textContent = totalScore; // 修改显示内容
 
-            const gridSize = parseInt(document.getElementById('gridSize').value);
-            initGame(gridSize, level);
+            initGame(rows, cols, level);
         }
 
-        function initGame(gridSize, level) {
+        function initGame(rows, cols, level) {
             const gameBoard = document.getElementById('gameBoard');
             gameBoard.innerHTML = '';
-            gameBoard.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+            gameBoard.style.gridTemplateColumns = `repeat(${cols}, 1fr)`; // 根据列数设置网格
 
             // 获取当前级别的词汇库
             const words = generateVocabulary(level);
 
             // 计算需要的卡片对数
-            let pairsNeeded = Math.floor((gridSize ** 2) / 2);
-            let hasBlankCard = (gridSize ** 2) % 2 !== 0;
+            let pairsNeeded = Math.floor((rows * cols) / 2);
+            let hasBlankCard = (rows * cols) % 2 !== 0;
 
             // 随机选择单词对
             const selectedWords = shuffleArray(words).slice(0, pairsNeeded);
@@ -247,6 +270,19 @@
             matchedPairs = 0;
             document.getElementById('score').textContent = '0';
         }
+
+        function resetGame() {
+            const level = document.getElementById('level').value;
+            // 重置当前级别的总得分
+            localStorage.setItem(`totalScore_${level}`, 0);
+            // 重置当前级别的已过关卡数
+            localStorage.setItem(`passedLevels_${level}`, 0);
+            // 重新开始游戏
+            startNewGame();
+        }
+
+
+
 
         function createCardElement(word) {
             const card = document.createElement('div');
@@ -290,13 +326,16 @@
                 card2.classList.add('matched');
                 playMatchSound();
             } else {
+                score = Math.max(0, score - 10); // 答错减分，确保分数不为负数
+                document.getElementById('score').textContent = score;
                 card1.classList.remove('flip');
                 card2.classList.remove('flip');
                 playErrorSound();
             }
             selectedCards = [];
-            const gridSize = parseInt(document.getElementById('gridSize').value);
-            const totalPairs = Math.floor((gridSize ** 2) / 2);
+            const rows = parseInt(document.getElementById('rows').value);
+            const cols = parseInt(document.getElementById('cols').value);
+            const totalPairs = Math.floor((rows * cols) / 2);
             if (matchedPairs === totalPairs) {
                 setTimeout(() => {
                     playEndingSound();
